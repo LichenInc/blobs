@@ -28,7 +28,6 @@ import {xml} from "./editable";
 // which can be rendered to svg.
 export const renderEditable = (p, opt) => {
     const points = p.map((point) => interpolate(point, opt.height));
-
     // Compute guides from input point data.
     const handles = [];
     for (let i = 0; i < points.length; i++) {
@@ -86,74 +85,6 @@ export const renderEditable = (p, opt) => {
 
     xmlContentGroup.children.push(xmlBlobPath);
     xmlRoot.children.push(xmlContentGroup);
-
-    // // Render guides if configured to do so.
-    // if (opt.guides) {
-    //     const color = opt.stroke || "black";
-    //     const size = opt.strokeWidth || 1;
-
-    //     // Bounding box.
-    //     if (opt.boundingBox) {
-    //         const xmlBoundingRect = xml("rect");
-    //         xmlBoundingRect.attributes.x = 0;
-    //         xmlBoundingRect.attributes.y = 0;
-    //         xmlBoundingRect.attributes.width = opt.width;
-    //         xmlBoundingRect.attributes.height = opt.height;
-    //         xmlBoundingRect.attributes.fill = "none";
-    //         xmlBoundingRect.attributes.stroke = color;
-    //         xmlBoundingRect.attributes["stroke-width"] = 2 * size;
-    //         xmlBoundingRect.attributes["stroke-dasharray"] = 2 * size;
-    //         xmlContentGroup.children.push(xmlBoundingRect);
-    //     }
-
-    //     // Points and handles.
-    //     for (let i = 0; i < points.length; i++) {
-    //         const {x, y} = loopAccess(points)(i);
-    //         const hands = loopAccess(handles)(i);
-    //         const nextPoint = loopAccess(points)(i + 1);
-
-    //         const xmlIncomingHandleLine = xml("line");
-    //         xmlIncomingHandleLine.attributes.x1 = x;
-    //         xmlIncomingHandleLine.attributes.y1 = y;
-    //         xmlIncomingHandleLine.attributes.x2 = hands.x1;
-    //         xmlIncomingHandleLine.attributes.y2 = hands.y1;
-    //         xmlIncomingHandleLine.attributes["stroke-width"] = size;
-    //         xmlIncomingHandleLine.attributes.stroke = color;
-
-    //         const xmlOutgoingHandleLine = xml("line");
-    //         xmlOutgoingHandleLine.attributes.x1 = nextPoint.x;
-    //         xmlOutgoingHandleLine.attributes.y1 = nextPoint.y;
-    //         xmlOutgoingHandleLine.attributes.x2 = hands.x2;
-    //         xmlOutgoingHandleLine.attributes.y2 = hands.y2;
-    //         xmlOutgoingHandleLine.attributes["stroke-width"] = size;
-    //         xmlOutgoingHandleLine.attributes.stroke = color;
-    //         xmlOutgoingHandleLine.attributes["stroke-dasharray"] = 2 * size;
-
-    //         const xmlIncomingHandleCircle = xml("circle");
-    //         xmlIncomingHandleCircle.attributes.cx = hands.x1;
-    //         xmlIncomingHandleCircle.attributes.cy = hands.y1;
-    //         xmlIncomingHandleCircle.attributes.r = size;
-    //         xmlIncomingHandleCircle.attributes.fill = color;
-
-    //         const xmlOutgoingHandleCircle = xml("circle");
-    //         xmlOutgoingHandleCircle.attributes.cx = hands.x2;
-    //         xmlOutgoingHandleCircle.attributes.cy = hands.y2;
-    //         xmlOutgoingHandleCircle.attributes.r = size;
-    //         xmlOutgoingHandleCircle.attributes.fill = color;
-
-    //         const xmlPointCircle = xml("circle");
-    //         xmlPointCircle.attributes.cx = x;
-    //         xmlPointCircle.attributes.cy = y;
-    //         xmlPointCircle.attributes.r = 2 * size;
-    //         xmlPointCircle.attributes.fill = color;
-
-    //         xmlContentGroup.children.push(xmlIncomingHandleLine);
-    //         xmlContentGroup.children.push(xmlOutgoingHandleLine);
-    //         xmlContentGroup.children.push(xmlIncomingHandleCircle);
-    //         xmlContentGroup.children.push(xmlOutgoingHandleCircle);
-    //         xmlContentGroup.children.push(xmlPointCircle);
-    //     }
-    // }
 
     return xmlRoot;
 };

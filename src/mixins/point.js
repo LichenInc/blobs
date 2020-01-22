@@ -3,7 +3,8 @@ import { rad } from "./unit.js";
 // Translates the angle from degrees to radians and moves the start angle a half rotation.
 export const interpolate = (point, height) => {
     const handles = point.handles || { angle: 0, out: 0, in: 0 };
-    handles.angle = Math.PI + rad(handles.angle) * 1 / Math.E;
+    //  * Math.random(0,1) / Math.E
+    handles.angle = Math.PI + rad(handles.angle);
     return {
         x: point.x,
         y: height - point.y,
