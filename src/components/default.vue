@@ -98,13 +98,16 @@ export default {
     },
     'blobOptions.seed' (newVal, oldVal) {
       if (newVal !== oldVal) {
-        let svg = document.getElementById('svblob')
-        if (svg.children[0]) {
-          const g = svg.children[0]
-          const path = g.children[0]
-          this.oldPath = path.getAttribute('d')
-        }
-        this.renderNewValBlob()
+        const temp = document.getElementById('blob')
+        while(temp.firstChild)
+          temp.removeChild(temp.firstChild)
+        // let svg = document.getElementById('svblob')
+        // if (svg.children[0]) {
+        //   const g = svg.children[0]
+        //   const path = g.children[0]
+        //   this.oldPath = path.getAttribute('d')
+        // }
+        this.renderBlob()
       }
     },
     'blobOptions.contrast' (newVal, oldVal) {
@@ -302,20 +305,22 @@ export default {
     forceWaitin() {
       this.$nextTick(() => '')
     },
-    rgen () {
-      // on a rajouté un random entre 0 et 1 pour être sur que les chiffres générés ne sont pas les mêmes
-      // mais qu'ils restent proches
-      return rand(String(Date.now()) + Math.random(0, this.randomFactor))()
-    },
+    // rgen () {
+    //   // on a rajouté un random entre 0 et 1 pour être sur que les chiffres générés ne sont pas les mêmes
+    //   // mais qu'ils restent proches
+    //   return rand(String(Date.now()) + Math.random(0, this.randomFactor))()
+    // },
     renderBlob () {
-      // const rgen = rand(this.blobOptions.seed || String(Date.now()))
+      const rgen = rand(this.blobOptions.seed || String(Date.now()))
+      console.log(rgen())
       const count = 3 + Math.floor(this.countFactor * 0.4)
       const angle = 360 / count
       // const angle = 90
       const radius = 300 / Math.E
       const points = []
       for (let i = 0; i < count; i++) {
-        const random = 1 - 0.8 * this.blobOptions.contrast * this.rgen()
+        const random = 1 - 0.8 * this.blobOptions.contrast * rgen()
+        console.log(rgen())
         points.push({
             x: Math.sin(rad(i * angle)) * radius * random + 600 / 2,
             y: Math.cos(rad(i * angle)) * radius * random + 600 / 2
@@ -327,7 +332,7 @@ export default {
         strength: ((4 / 3) * Math.tan(rad(angle / 4))) / Math.sin(rad(angle / 2)),
       })
 
-      this.blobOptions['transform'] = `rotate(${this.rgen() * this.angle / Math.PI},${600 / 2},${600 / 2})`
+      this.blobOptions['transform'] = `rotate(${rgen() * this.angle / Math.PI},${600 / 2},${600 / 2})`
       let temp = renderEditable(smoth, this.blobOptions)
       const elem = document.createElementNS('http://www.w3.org/2000/svg', temp.tag)
       elem.id = 'svblob' 
@@ -351,13 +356,14 @@ export default {
       }
     },
     renderNewValBlob () {
+      const rgen = rand(String(Date.now()))
       const count = 3 + Math.floor(this.countFactor * 0.4)
       const angle = 360 / count
       // const angle = 90
       const radius = 300 / Math.E
       const points = []
       for (let i = 0; i < count; i++) {
-        const random = 1 - 0.8 * this.blobOptions.contrast * this.rgen()
+        const random = 1 - 0.8 * this.blobOptions.contrast * rgen()
         points.push({
             x: Math.sin(rad(i * angle)) * radius * random + 600 / 2,
             y: Math.cos(rad(i * angle)) * radius * random + 600 / 2
@@ -368,7 +374,7 @@ export default {
         closed: true,
         strength: ((4 / 3) * Math.tan(rad(angle / 4))) / Math.sin(rad(angle / 2)),
       })
-      this.blobOptions['transform'] = `rotate(${this.rgen() * this.angle / Math.PI},${600 / 2},${600 / 2})`
+      this.blobOptions['transform'] = `rotate(${rgen() * this.angle},${600 / 2},${600 / 2})`
       let temp = renderEditable(smoth, this.blobOptions)
       const enf = temp.children[0].children[0]
       this.currentPath = enf.attributes.d
