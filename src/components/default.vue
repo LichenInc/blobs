@@ -286,7 +286,7 @@ export default {
       if (svg.children[0]) {
         const g = svg.children[0]
         const path = g.children[0]
-        this.oldPath = path.setAttribute('d', this.currentPath)
+        path.setAttribute('d', this.currentPath) // ON METS LE NOUVEAU PATH ICI
       }
     }
   }
