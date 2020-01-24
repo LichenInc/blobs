@@ -1,39 +1,19 @@
-<template lang="pug">
-  div(id='app')
-    div
-      span nombre de point: {{ count }}
-      //- input(type='number', v-model='blobOptions.complexity')
-      input(type='range', min=0, max=1, step=0.1, v-model='blobOptions.complexity')
-    div
-      span Seed:
-      input(type='text', v-model='blobOptions.seed')
-    div
-      span contrast
-      input(type='range', min=0, max=1, step=0.1, v-model='blobOptions.contrast')
-    div
-      span count countFactor
-      input(type='range', min=1, max=100, step=1, v-model='countFactor')
-    div
-      span RANDOM FACTOR
-      input(type='range', min=1, max=100, step=1, v-model='randomFactor')
-    div
-      span Angle influencer (1 / 360)
-      input(type='range', min=1, max=100, step=1, v-model='angleFactor')
-    div(id='blob')
-    div current path: {{currentPath}}
-    div old path: {{oldPath}}
-    button(@click='goIdle') Idle animation
-</template>
-
 <script>
 import { rand } from '@/mixins/rand.js'
 import { rad } from '@/mixins/unit.js'
 import { renderEditable } from '@/mixins/render.js'
 import { smooth } from '@/mixins/smooth.js'
+import Animations from '@/mixins/animations.js'
+import GlitchFilter from '@/components/filters/glitchFilter.vue'
+import TextureFilter from '@/components/filters/textureFilter.vue'
+
 export default {
   name: 'app',
   components: {
+    GlitchFilter,
+    TextureFilter
   },
+  mixins: [Animations],
   props: {
     nb_points: { required: false, type: Number, default: 0 },
     complexite: { required: false, type: Number, default: 0 },
@@ -52,7 +32,7 @@ export default {
       angleFactor: 360,
       startIdle: false,
       stockPoint: null,
-      blobOptions: {        
+      blobOptions: {
         closed: true,
         fill: '#ec576b',
         width: 600,
@@ -181,7 +161,7 @@ export default {
   computed: {
     count () {
       // pris du fichier de base countFactor = 14
-      return 3 + Math.floor(this.countFactor * this.blobOptions.complexity) 
+      return 3 + Math.floor(this.countFactor * this.blobOptions.complexity)
     },
     radius () {
       return 600 / Math.E
@@ -210,7 +190,7 @@ export default {
   created () {
     if (this.nb_points) this.blobOptions.complexity = this.nb_points
     if (this.complexite) this.blobOptions.contrast = this.complexite
-    if (this.couleur_debut) this.blobOptions.fill = this.couleur_debut 
+    if (this.couleur_debut) this.blobOptions.fill = this.couleur_debut
   },
   mounted () {
     // this.oldRender()
@@ -299,7 +279,7 @@ export default {
       //       path.setAttribute('fill', this.blobOptions.fill) // ON METS LA NOUVELLE COULEUR
       //       path.setAttribute('d', diff) // ON METS LE NOUVEAU PATH ICI
       //     })
-      //   }       
+      //   }
       // }
     },
     forceWaitin() {
@@ -312,7 +292,7 @@ export default {
     // },
     renderBlob () {
       const rgen = rand(this.blobOptions.seed || String(Date.now()))
-      console.log(rgen())
+      // console.log(rgen())
       const count = 3 + Math.floor(this.countFactor * 0.4)
       const angle = 360 / count
       // const angle = 90
@@ -320,7 +300,7 @@ export default {
       const points = []
       for (let i = 0; i < count; i++) {
         const random = 1 - 0.8 * this.blobOptions.contrast * rgen()
-        console.log(rgen())
+        // console.log(rgen())
         points.push({
             x: Math.sin(rad(i * angle)) * radius * random + 600 / 2,
             y: Math.cos(rad(i * angle)) * radius * random + 600 / 2
@@ -335,7 +315,7 @@ export default {
       this.blobOptions['transform'] = `rotate(${rgen() * this.angle / Math.PI},${600 / 2},${600 / 2})`
       let temp = renderEditable(smoth, this.blobOptions)
       const elem = document.createElementNS('http://www.w3.org/2000/svg', temp.tag)
-      elem.id = 'svblob' 
+      elem.id = 'svblob'
       elem.setAttribute('width', 600)
       elem.setAttribute('height', 600)
       elem.setAttribute('viewbox', temp.attributes.viewBox)
@@ -392,13 +372,106 @@ export default {
 }
 </script>
 
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+<template lang="pug">
+  div(id='app')
+    button#component-8.button.button--8(style="filter: url('#filter'); cursor: pointer;") Click me
+    input(type='radio', v-model='currentEffect', name='currentEffect', value='glitch')
+    | Glitch
+    input(type='radio', v-model='currentEffect', name='currentEffect', value='texture')
+    | Texture
+    input(type='radio', v-model='currentEffect', name='currentEffect', value='other')
+    | Other
+    //- pre {{value}}
+    button(@click='launchEffect', :disabled='!currentEffect') Launch effect
+    button(@click='clearEffect', :disabled='!currentEffect') clear effect
+    div
+      span nombre de point: {{ count }}
+      //- input(type='number', v-model='blobOptions.complexity')
+      input(type='range', min=0, max=1, step=0.1, v-model='blobOptions.complexity')
+    div
+      span Seed:
+      input(type='text', v-model='blobOptions.seed')
+    div
+      span contrast
+      input(type='range', min=0, max=1, step=0.1, v-model='blobOptions.contrast')
+    div
+      span count countFactor
+      input(type='range', min=1, max=100, step=1, v-model='countFactor')
+    div
+      span RANDOM FACTOR
+      input(type='range', min=1, max=100, step=1, v-model='randomFactor')
+    div
+      span Angle influencer (1 / 360)
+      input(type='range', min=1, max=100, step=1, v-model='angleFactor')
+    div(id='blob', :class='{"active-filter" : currentEffect}')
+    //- div current path: {{currentPath}}
+    //- div old path: {{oldPath}}
+    button(@click='goIdle') Idle animation
+    glitch-filter(v-if='currentEffect === "glitch"')
+    texture-filter(v-if='currentEffect === "texture"')
+</template>
+<style lang="sass">
+#app
+  font-family: 'Avenir', Helvetica, Arial, sans-serif
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
+  text-align: center
+  color: #2c3e50
+  margin-top: 60px
+</style>
+<style>
+#svblob.active-filter path{
+  -webkit-filter: url("#filter");
+  filter: url("#filter");
+}
+</style>
+<style lang='scss'>
+$dark-blue: #222;
+$green: #2CD892;
+$action-color: $green;
+
+.button--8 {
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  background-color: $dark-blue;
+  border: none;
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85em;
+  font-weight: 700;
+  text-decoration: none;
+  user-select: none;
+  letter-spacing: 0.1em;
+  color: white;
+  padding: 20px 40px;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+  outline: 10px solid #F6F6F6!important; // background-color of parent
+  background: #F6F6F6;
+  border: 2px solid #000;
+  color: #000;
+
+  &:focus {
+    color: $dark-blue;
+  }
+
+  &:hover {
+    background: #F6F6F6;
+    border-color: $action-color;
+    color: $action-color;
+  }
+}
+.svg-filters {
+  position: absolute;
+  visibility: hidden;
+  width: 1px;
+  height: 1px;
+}
+.button,
+.button__bg {
+  .safari & {
+    -webkit-filter: none!important;
+    filter: none!important;
+  }
 }
 </style>

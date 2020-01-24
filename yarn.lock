@@ -4123,6 +4123,10 @@ graphql@^14.5.8:
   dependencies:
     iterall "^1.2.2"
 
+gsap@./src/assets/gsap-bonus.tgz:
+  version "3.0.5"
+  resolved "./src/assets/gsap-bonus.tgz#800f918efed6e6c090300298aaad7f9e69ecfbc7"
+
 gzip-size@^5.0.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/gzip-size/-/gzip-size-5.1.1.tgz#cb9bee692f87c0612b232840a873904e4c135274"

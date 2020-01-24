@@ -12,6 +12,7 @@
     "core-js": "^3.4.4",
     "graphql": "^14.5.8",
     "graphql-tag": "^2.10.1",
+    "gsap": "./src/assets/gsap-bonus.tgz",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",
     "rand-seed": "^0.1.2",
