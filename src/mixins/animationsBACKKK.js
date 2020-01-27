@@ -10,9 +10,6 @@ export default {
   },
   data () {
     return {
-      tween: null,
-      tweenTarget: '#svblob path',
-      tweenOptions: {},
       myTween: null,
       dummyTarget: null,
       filterTarget: null,
@@ -26,59 +23,16 @@ export default {
   watch: {
     'currentPath' (newVal, oldVal) {
       if (newVal !== oldVal) {
+        // console.log('on a une diference')
         // this.triggerMorph()
-        if(this.tween) {
-          this.tween.kill()
-        }
-        if (this.$store.state.looping) {
-          this.tweenOptions = {
-            fill: this.couleur_debut,
-            morphSVG: {
-              shape: this.currentPath,
-              shapeIndex: 1
-            },
-            duration: 5,
-            yoyo: true,
-            repeat: -1,
-            ease: 'power1.inOut',
-            opacity: 0.5
-          }
-          this.tween = gsap.to(this.tweenTarget, this.tweenOptions)
-        } else {
-          this.tweenOptions = {
-            fill: this.couleur_fin,
-            morphSVG: {
-              shape: this.currentPath,
-              shapeIndex: 1
-            },
-            duration: 2,
-            yoyo: false,
-            repeat: 0,
-            opacity: 1,
-            ease: 'power1.inOut'
-          }
-          this.tween = gsap.to(this.tweenTarget, this.tweenOptions)
-        }
       }
     },
-    // 'startIdle' (newVal, oldVal) {
-    //   console.log(newVal, oldVal, 'startIdleWatcher')
-    //   if (newVal === false) {
-    //     // this.stopIdle()
-    //     this.tweenOptions = {
-    //       fill: 'yellow',
-    //       morphSVG: {
-    //         shape: this.currentPath,
-    //         shapeIndex: 1
-    //       },
-    //       yoyo: true,
-    //       repeat: -1,
-    //       ease: 'power1.inOut'
-    //     }
-    //     this.tween.kill()
-    //     this.tween = gsap.to(this.tweenTarget, 2, this.tweenOptions)
-    //   }
-    // },
+    'startIdle' (newVal, oldVal) {
+      console.log(newVal, oldVal, 'startIdleWatcher')
+      if (newVal === false) {
+        // this.stopIdle()
+      }
+    },
     'currentEffect' (newVal, oldVal) {
       // console.log(newVal, oldVal, 'watcher effect')
       if (newVal === null || !newVal || newVal === '') {
@@ -105,37 +59,116 @@ export default {
     this.$nextTick(() => {
       thus.dummyTarget = window.document.getElementById('component-8');
       thus.filterTarget = window.document.getElementById('svblob');
+      console.log(this.filterTarget, 'filterTarget')
       // console.log('dummyTarget', thus.dummyTarget)
-      // thus.tween = gsap.to(thus.tweenTarget, 2, thus.tweenOptions)
-      // console.log(thus.tween, 'newTween')
-      // thus.tween = gsap.quickSetter(thus.tweenTarget)
-    })
-  },
-  methods: {
-    kill() {
-      this.$nextTick (() => {
-        console.log(this.tween, gsap.isTweening(this.tweenTarget), )
-        gsap.isTweening(this.tweenTarget)
-        this.tween.kill()
-        // this.tween.pause()
+      const timeline = new TimelineMax()
+      timeline.to('#svblob path', 2, {
+        scale: 2,
+        rotation: 10,
+        yoyo: true
       })
-    },
-    stopIdle () {
-      console.log('ON STOP LE IDLE')
-    },
-    triggerMorph () {
-      console.log('Triggering Morph')
-      // this.myTween.to({
-      //   fill: this.couleur_debut,
+      timeline.to('#svblob path', 2, {
+        scale: 1,
+        rotation: '-=16',
+        ease: 'power1.inOut'
+      })
+      // var tween = new TweenMax('#svblob path', 2, {
+      //   fill: thus.couleur_debut,
       //   morphSVG: {
-      //     shape: this.currentPath,
+      //     shape: thus.currentPath,
       //     shapeIndex: 1
       //   },
-      //   // duration: 2,
-      //   yoyo: this.$store.state.looping,
-      //   repeat: this.$store.state.repetition,
+      //   yoyo: thus.$store.state.looping,
+      //   repeat: thus.$store.state.repetition,
       //   ease: 'power1.inOut'
       // })
+      // tween.to('#svblob path', 2, {
+      //   fill: thus.couleur_debut,
+      //   morphSVG: {
+      //     shape: thus.currentPath,
+      //     shapeIndex: 1
+      //   },
+      //   yoyo: thus.$store.state.looping,
+      //   repeat: thus.$store.state.repetition,
+      //   ease: 'power1.inOut'
+      // }
+      // )
+      // this.$nextTick(() => {
+      //   let thus = this
+      //   thus.secondEffect()
+      // })
+
+      // let thas = thus
+      // thus.filterTarget.addEventListener('click', function() {
+      //   console.log('jeclick2')
+      //   thas.launchEffect()
+      //   // thas.filterTargetTimeline.restart();
+      // });
+    })
+
+  },
+  methods: {
+    stopIdle () {
+      console.log('ON STOP LE IDLE', this.morphTween)
+      // this.morphTween.to('#svblob path', 0.5, {
+      //     // morphSVG: '#blobPath2',
+      //     fill: 'orange',
+      //     morphSVG: {
+      //       shape: this.oldPath,
+      //       shapeIndex: 1
+      //     },
+      //     yoyo: false,
+      //     repeat: 0,
+      //     ease: 'power1.inOut'
+      // })
+      // this.morphTimeline.stop()
+      // this.morphTimeline.to('#svblob path', 2, {
+      //     // morphSVG: '#blobPath2',
+      //     stringFilter:MorphSVGPlugin.pathFilter,
+      //     fill: 'blue',
+      //     morphSVG: {
+      //       shape: this.oldPath,
+      //       shapeIndex: 1
+      //     },
+      //     // duration: 2,
+      //     yoyo: false,
+      //     repeat: 0,
+      //     ease: 'power1.inOut'
+      //     // ease: 'myWiggle'
+      // })
+      // console.log()
+      // this.morphTween.yoyo(false)
+      // this.mor
+      // this.morphTween.updateTo({
+      //   fill: 'green',
+      // }, false)
+      // this.morphTween.to('#svblob path', {
+      //     // morphSVG: '#blobPath2',
+      //     fill: 'blue',
+      //     morphSVG: {
+      //       shape: this.currentPath,
+      //       shapeIndex: 1
+      //     },
+      //     duration: 2,
+      //     yoyo: false,
+      //     repeat: 0,
+      //     ease: 'power1.inOut'
+      //     // ease: 'myWiggle'
+      // })
+    },
+    triggerMorph () {
+      console.log(this.myTween, 'MYTWEEN')
+      this.myTween.to({
+        fill: this.couleur_debut,
+        morphSVG: {
+          shape: this.currentPath,
+          shapeIndex: 1
+        },
+        // duration: 2,
+        yoyo: this.$store.state.looping,
+        repeat: this.$store.state.repetition,
+        ease: 'power1.inOut'
+      })
       // this.morphTween = TweenMax.fromTo('#svblob path', 2, {
       //     // morphSVG: '#blobPath2',
       //     fill: this.couleur_debut,
