@@ -4,6 +4,8 @@ import store from './store'
 import router from './router'
 import VueApollo from 'vue-apollo'
 import ApolloClient from 'apollo-boost'
+import VueKinesis from 'vue-kinesis'
+
 
 const apolloClient = new ApolloClient({
   // You should use an absolute URL here
@@ -13,6 +15,7 @@ const apolloProvider = new VueApollo({
   defaultClient: apolloClient,
 })
 Vue.use(VueApollo)
+Vue.use(VueKinesis)
 
 Vue.config.productionTip = false
 

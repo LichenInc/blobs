@@ -12,7 +12,7 @@ export default {
 </script>
 
 <template lang='pug'>
-  div
+  div(id='app')
     router-view
 </template>
 
