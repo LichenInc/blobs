@@ -1,6 +1,6 @@
 <template lang="pug">
   .show-blob
-    div.absolute.top-0.left-0(style='z-index:100; display:flex; width: 200px; flex-direction:column;')
+    div.presets-wrapper(style='z-index:100; display:flex; width: 200px; flex-direction:column;')
       h1 Page pour test Graphql
       ApolloQuery(:query='query')
         template(slot-scope="{ result: { loading, error, data } }")

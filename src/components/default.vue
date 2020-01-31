@@ -53,10 +53,17 @@ export default {
         guides: false, //rendu des points et barres
       },
       showGradient: true,
-      fillPercentage: 0
+      fillPercentage: 0,
+      currentBackgroundColor: '#3171d8'
     }
   },
   watch: {
+    'currentBackgroundColor' (newVal) {
+      let wrapper = window.document.getElementById('app')
+      if (newVal) {
+        wrapper.style.backgroundColor = newVal
+      }
+    },
     'countFactor' (newVal, oldVal) {
       if (newVal !== oldVal) {
         this.renderNewValBlob()
@@ -226,7 +233,7 @@ export default {
       // Autre parametres de rotate enlevés
       // this.blobOptions['transform'] = `rotate(${rgen() * this.angle / Math.PI},${600 / 2},${600 / 2})`
 
-      this.blobOptions['transform'] = `rotate(${rgen() * this.angle / Math.PI})`
+      // this.blobOptions['transform'] = `rotate(${rgen() * this.angle / Math.PI})`
       let temp = renderEditable(smoth, this.blobOptions)
       if (!this.firstTry) {
         const elem = document.getElementById('svblob')
@@ -290,7 +297,7 @@ export default {
         closed: true,
         strength: ((4 / 3) * Math.tan(rad(angle / 4))) / Math.sin(rad(angle / 2)),
       })
-      this.blobOptions['transform'] = `rotate(${rgen() * this.angle})`
+      // this.blobOptions['transform'] = `rotate(${rgen() * this.angle})`
       let temp = renderEditable(smoth, this.blobOptions)
       const enf = temp.children[0].children[0]
       this.currentPath = enf.attributes.d
@@ -308,17 +315,20 @@ export default {
           span allo
 
     div.options-wrapper
-      pre {{looping}} Looping?
-      pre {{currentEffect}} currentEffect
+      pre {{looping}} Est-ce que l'animation idle est active?
+      pre {{currentEffect}} Effet actif
       div.effects-choice
         input(type='radio', v-model='currentEffect', name='currentEffect', value='glitch')
         | Glitch
         input(type='radio', v-model='currentEffect', name='currentEffect', value='texture')
         | Texture
-        input(type='radio', v-model='currentEffect', name='currentEffect', value='shadow')
+        input(type='radio', v-model='currentEffect', name='currentEffect', value='shadow', disabled)
         | Shadow
-        input(type='radio', v-model='currentEffect', name='currentEffect', value='other')
+        input(type='radio', v-model='currentEffect', name='currentEffect', value='other', disabled)
         | Other
+      div.flex.items-center.mv2
+        div.mr2 Couleur de fond
+        input(type='color', v-model='currentBackgroundColor', name='currentBackgroundColor', value='bgColor')
       div
         button(@click='globalEmotion("negatif")') Émotion négative
         button(@click='globalEmotion("positif")') Émotion positive
@@ -361,7 +371,7 @@ export default {
         pre looping: {{$store.state.looping}}
         pre repetition: {{$store.state.repetition}}
     kinesis-container.blob-wrapper
-      kinesis-element(:strength='10', type='depth')
+      kinesis-element(:strength='0', type='depth')
         div(refs='blob', id='blob', :class='{"active-filter" : currentEffect}')
 
           svg(id='svblob', refs='blobRef', xmlns='http://www.w3.org/2000/svg', version='1.1', preserveAspectRatio='xMidYMin slice', viewBox='0 0 100 100')
@@ -429,11 +439,26 @@ export default {
   // text-align: center
   color: #2c3e50
   // margin-top: 60px
+  // background-color: #241f38
+  background-color: #ffbcb1
+  height: 100vh
+  overflow-y: auto
 .svg-filters
   position: absolute
   visibility: hidden
   width: 1px
   height: 1px
+.presets-wrapper
+  position: absolute
+  background-color: rgba(255,255,255,0.5)
+  padding: 20px
+  margin: 20px
+  border-radius: 10px
+  top: 0
+  left: 0
+  z-index: 10
+  width: 400px
+  overflow-x: hidden
 .options-wrapper
   position: absolute
   background-color: rgba(255,255,255,0.5)
@@ -444,6 +469,7 @@ export default {
   right: 0
   z-index: 10
   width: 400px
+  overflow-x: hidden
   .param
     display: flex
     justify-content: space-between
@@ -454,7 +480,7 @@ export default {
   left: 0
   height: 100%
   width: 100%
-  background: lightgrey
+  // background: lightgrey
   #blob
     // box-shadow: 0 0 0 10px #b6bdc3
     max-width: 1000px
@@ -466,7 +492,7 @@ export default {
     position: relative
     svg#svblob
       // background-color: grey
-      border: solid 10px red
+      // border: solid 10px red
       position: absolute
       top: 0
       left: 0

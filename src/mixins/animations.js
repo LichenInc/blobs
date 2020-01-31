@@ -61,7 +61,7 @@ export default {
               shape: this.currentPath,
               shapeIndex: 1
             },
-            duration: 2,
+            duration: 7,
             yoyo: true,
             repeat: -1,
             ease: 'power1.inOut',
@@ -77,7 +77,7 @@ export default {
               shape: this.currentPath,
               shapeIndex: 2
             },
-            duration: 1,
+            duration: 7,
             yoyo: false,
             repeat: 0,
             opacity: 1,
@@ -226,26 +226,30 @@ export default {
           stopColor: this.couleur_debut,
           attr: {
             'offset': '0%'
-          }
+          },
+          duration: 5
         }
         this.gradientOptionsEnd = {
           stopColor: this.couleur_fin,
           attr: {
             'offset': '100%'
-          }
+          },
+          duration: 5
         }
       } else {
         this.gradientOptionsStart = {
           stopColor: this.couleur_debut,
           attr: {
             'offset': '100%'
-          }
+          },
+          duration: 5
         }
         this.gradientOptionsEnd = {
           stopColor: this.couleur_debut,
           attr: {
             'offset': '100%'
-          }
+          },
+          duration: 5
         }
       }
       this.gradientTweenWrap = gsap.to(this.gradientWrapTweenTarget, this.gradientOptionsWrap)
