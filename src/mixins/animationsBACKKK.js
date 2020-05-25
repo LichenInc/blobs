@@ -59,7 +59,7 @@ export default {
     this.$nextTick(() => {
       thus.dummyTarget = window.document.getElementById('component-8');
       thus.filterTarget = window.document.getElementById('svblob');
-      console.log(this.filterTarget, 'filterTarget')
+      // console.log(this.filterTarget, 'filterTarget')
       // console.log('dummyTarget', thus.dummyTarget)
       const timeline = new TimelineMax()
       timeline.to('#svblob path', 2, {
@@ -109,7 +109,7 @@ export default {
   },
   methods: {
     stopIdle () {
-      console.log('ON STOP LE IDLE', this.morphTween)
+      // console.log('ON STOP LE IDLE', this.morphTween)
       // this.morphTween.to('#svblob path', 0.5, {
       //     // morphSVG: '#blobPath2',
       //     fill: 'orange',
@@ -157,7 +157,7 @@ export default {
       // })
     },
     triggerMorph () {
-      console.log(this.myTween, 'MYTWEEN')
+      // console.log(this.myTween, 'MYTWEEN')
       this.myTween.to({
         fill: this.couleur_debut,
         morphSVG: {
@@ -234,14 +234,14 @@ export default {
             this.filterTargetTimeline = new TimelineMax({ paused: true, onUpdate: function() {
               thus.turbulence.setAttribute('baseFrequency', '0 ' + thus.turbVal.val);
             } });
-            console.log('jeclick', thus.turbVal, thus.turbulence, this.filterTargetTimeline)
+            // console.log('jeclick', thus.turbVal, thus.turbulence, this.filterTargetTimeline)
             thus.filterTargetTimeline.to(thus.turbVal, 0.25, { val: 0.05 });
             thus.filterTargetTimeline.to(thus.turbVal, 1, { val: 0.000001 });
         }
       })
     },
     secondEffect () {
-      console.log('on est dans le second effect')
+      // console.log('on est dans le second effect')
       // let turbulence = null
       // // let turbVal = null
       // let displacementMap = null
@@ -259,10 +259,10 @@ export default {
     },
     launchEffect () {
       if (this.filterTargetTimeline && this.filterTarget) {
-        console.log('LAUCHNEFFECT')
+        // console.log('LAUCHNEFFECT')
         this.filterTargetTimeline.restart();
       } else {
-        console.log('Désolé il manque dequoi pour lancer leffet', this.filterTarget, this.filterTargetTimeline)
+        // console.log('Désolé il manque dequoi pour lancer leffet', this.filterTarget, this.filterTargetTimeline)
       }
     },
     clearEffect () {

@@ -17,10 +17,11 @@ export default {
   props: {
     nb_points: { required: false, type: Number, default: 0 },
     complexite: { required: false, type: Number, default: 0 },
-    couleur_debut: { required: false, type: String, default: '#3171d8' },
-    couleur_fin: { required: false, type: String, default: '#ec576b' },
+    couleur_debut: { required: false, type: String, default: '#431d2d' },
+    couleur_fin: { required: false, type: String, default: '#ff284f' },
     transition: { required: false, type: Number, default: 0 },
-    effects: { required: false, type: Array, default: () => [] }
+    effects: { required: false, type: Array, default: () => [] },
+    debugOptions: { required: false, type: Boolean, default: false }
   },
   data () {
     return {
@@ -36,8 +37,8 @@ export default {
       stockPoint: null,
       blobOptions: {
         closed: true,
-        fill: '#ec576b',
-        fillStart: '#ec576b',
+        fill: '#ff284f',
+        fillStart: '#ff284f',
         fillEnd: 'grey',
         width: 100,
         height: 100,
@@ -54,7 +55,7 @@ export default {
       },
       showGradient: true,
       fillPercentage: 0,
-      currentBackgroundColor: '#3171d8'
+      currentBackgroundColor: '#431d2d'
     }
   },
   watch: {
@@ -169,7 +170,7 @@ export default {
   methods: {
     goIdle () {
       this.startIdle = !this.startIdle
-      console.log('IDLE?', this.startIdle)
+      // console.log('IDLE?', this.startIdle)
       if (this.startIdle) {
         this.$store.state.looping = true
         this.$store.state.repetition = -1
@@ -274,7 +275,7 @@ export default {
 
     },
     renderNewValBlob () {
-      console.log('on render un nouveau blob')
+      // console.log('on render un nouveau blob')
       const rgen = rand(String(Date.now()))
       const count = 3 + Math.floor(this.countFactor * 0.4)
       const angle = 360 / count
@@ -307,14 +308,8 @@ export default {
 </script>
 
 <template lang="pug">
-  .blob-index
-    div
-      kinesis-container()
-        div alloalaoal
-        kinesis-element(:strength='10', type='depth')
-          span allo
-
-    div.options-wrapper
+  .blob-wrapper
+    div.options-wrapper(v-if='debugOptions')
       pre {{looping}} Est-ce que l'animation idle est active?
       pre {{currentEffect}} Effet actif
       div.effects-choice
@@ -370,62 +365,60 @@ export default {
         pre {{currentPath}}
         pre looping: {{$store.state.looping}}
         pre repetition: {{$store.state.repetition}}
-    kinesis-container.blob-wrapper
-      kinesis-element(:strength='0', type='depth')
-        div(refs='blob', id='blob', :class='{"active-filter" : currentEffect}')
+    div(refs='blob', id='blob', :class='{"active-filter" : currentEffect}')
 
-          svg(id='svblob', refs='blobRef', xmlns='http://www.w3.org/2000/svg', version='1.1', preserveAspectRatio='xMidYMin slice', viewBox='0 0 100 100')
-            defs
-              //- <mask id="text-mask">
-              //-   <use x="0" y="0" xlink:href="#text" opacity="1" fill="#ffffff"/>
-              //- </mask>
-              mask#mask(maskUnits="objectBoundingBox", maskContentUnits="objectBoundingBox")
-                rect#maskShape(x='0', y='0', height='100', width='100', fill='#fff', class='rectangle-mask')
+      svg(id='svblob', refs='blobRef', xmlns='http://www.w3.org/2000/svg', version='1.1', preserveAspectRatio='xMidYMid meet', viewBox='0 0 100 100')
+        defs
+          //- <mask id="text-mask">
+          //-   <use x="0" y="0" xlink:href="#text" opacity="1" fill="#ffffff"/>
+          //- </mask>
+          mask#mask(maskUnits="objectBoundingBox", maskContentUnits="objectBoundingBox")
+            rect#maskShape(x='0', y='0', height='100', width='100', fill='#fff', class='rectangle-mask')
 
-              //- radialGradient#grade3(cx="0.5" cy="0.5" r="0.5" fx="0.25" fy="0.25", gradientTransform='translate(0,0)')
-                stop#gradientStart(offset='0%', stop-opacity='1', stop-color='black')
-                stop#gradientEnd(offset='100%', stop-opacity='1', stop-color='white')
-              linearGradient#grad(x1='0%', y1='0%', x2='0%', y2='100%', gradientTransform='translate(0,0)')
-                stop#gradientStart(offset='0%', stop-opacity='1')
-                stop#gradientEnd(offset='100%', stop-opacity='1')
-              //- filter#filter(x='-20%', y='-20%', width='140%', height='140%', filterUnits='objectBoundingBox', color-interpolation-filters='linearRGB')
-                feTurbulence(type='turbulence', baseFrequency='0.01 0.05', numOctaves='2', seed='2', stitchTiles='noStitch', result='turbulence')
-                feDisplacementMap(in='SourceGraphic', in2='turbulence', scale='20', xChannelSelector='G', yChannelSelector='A', result='displacementMap')
-              template(v-if='currentEffect === "shadow"')
-                <filter id="filter">
-                  <feDropShadow stdDeviation="10 20" in="SourceGraphic" dx="4" dy="9" flood-color="#1F3646" flood-opacity="0.6" x="0%" y="0%" width="100%" height="100%" result="dropShadow"/>
-                </filter>
-                <filter id="filter" x="-20%" y="-20%" width="140%" height="140%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" color-interpolation-filters="linearRGB">
-                  <feDisplacementMap in="SourceGraphic" in2="SourceGraphic" scale="3" xChannelSelector="R" yChannelSelector="B" x="0%" y="0%" width="100%" height="100%" result="displacementMap"/>
-                  <feComponentTransfer x="0%" y="0%" width="100%" height="100%" in="convolveMatrix" result="componentTransfer">
-                    <feFuncR type="discrete" tableValues="1 0 1"/>
-                    <feFuncG type="discrete" tableValues="0 1 0"/>
-                    <feFuncB type="discrete" tableValues="1 0 1"/>
-                    <feFuncA type="discrete" tableValues="0 1"/>
-                  </feComponentTransfer>
-                  <feMerge>
-                    <feMergeNode in="componentTransfer"/>
-                    <feMergeNode in="displacementMap"/>
-                  </feMerge>
-                </filter>
-              template(v-if='currentEffect === "glitch"')
-                <filter id="filter">
-                    <feTurbulence type="fractalNoise" baseFrequency="0.00001 0.00001" numOctaves="1" result="warp"></feTurbulence>
-                    <feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="10" in="SourceGraphic" in2="warpOffset" />
-                </filter>
-              template(v-else-if='currentEffect === "texture"')
-                //- <filter id="filter" x="-20%" y="-20%" width="140%" height="140%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" color-interpolation-filters="linearRGB">
-                //- 	<feDropShadow stdDeviation="20 20" in="SourceGraphic" dx="4" dy="9" flood-color="#1F3646" flood-opacity="0.6" x="0%" y="0%" width="100%" height="100%" result="dropShadow"/>
-                //- </filter>
-                //- <filter id="filter">
-                //-   <feImage xlink:href="/ripple.png" x="30" y="20" width="0" height="0" result="ripple"></feImage>
-                //-   <feDisplacementMap xChannelSelector="R" yChannelSelector="G" color-interpolation-filters="sRGB" in="SourceGraphic" in2="ripple" scale="20" result="displacementMap" />
-                //-   <feComposite operator="in" in2="ripple"></feComposite>
-                //-   <feComposite in2="SourceGraphic"></feComposite>
-                //- </filter>
-            //- svg id="svblob" refs="blobRef" xmlns="http://www.w3.org/2000/svg" version="1.1" preserveAspectRatio="xMidYMin slice" viewBox="0 0 600 600"
-    //- glitch-filter(v-if='currentEffect === "glitch"')
-    //- texture-filter(v-if='currentEffect === "texture"')
+          //- radialGradient#grade3(cx="0.5" cy="0.5" r="0.5" fx="0.25" fy="0.25", gradientTransform='translate(0,0)')
+            stop#gradientStart(offset='0%', stop-opacity='1', stop-color='black')
+            stop#gradientEnd(offset='100%', stop-opacity='1', stop-color='white')
+          linearGradient#grad(x1='0%', y1='0%', x2='0%', y2='100%', gradientTransform='translate(0,0)')
+            stop#gradientStart(offset='0%', stop-opacity='1')
+            stop#gradientEnd(offset='100%', stop-opacity='1')
+          //- filter#filter(x='-20%', y='-20%', width='140%', height='140%', filterUnits='objectBoundingBox', color-interpolation-filters='linearRGB')
+            feTurbulence(type='turbulence', baseFrequency='0.01 0.05', numOctaves='2', seed='2', stitchTiles='noStitch', result='turbulence')
+            feDisplacementMap(in='SourceGraphic', in2='turbulence', scale='20', xChannelSelector='G', yChannelSelector='A', result='displacementMap')
+          template(v-if='currentEffect === "shadow"')
+            <filter id="filter">
+              <feDropShadow stdDeviation="10 20" in="SourceGraphic" dx="4" dy="9" flood-color="#1F3646" flood-opacity="0.6" x="0%" y="0%" width="100%" height="100%" result="dropShadow"/>
+            </filter>
+            <filter id="filter" x="-20%" y="-20%" width="140%" height="140%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" color-interpolation-filters="linearRGB">
+              <feDisplacementMap in="SourceGraphic" in2="SourceGraphic" scale="3" xChannelSelector="R" yChannelSelector="B" x="0%" y="0%" width="100%" height="100%" result="displacementMap"/>
+              <feComponentTransfer x="0%" y="0%" width="100%" height="100%" in="convolveMatrix" result="componentTransfer">
+                <feFuncR type="discrete" tableValues="1 0 1"/>
+                <feFuncG type="discrete" tableValues="0 1 0"/>
+                <feFuncB type="discrete" tableValues="1 0 1"/>
+                <feFuncA type="discrete" tableValues="0 1"/>
+              </feComponentTransfer>
+              <feMerge>
+                <feMergeNode in="componentTransfer"/>
+                <feMergeNode in="displacementMap"/>
+              </feMerge>
+            </filter>
+          template(v-if='currentEffect === "glitch"')
+            <filter id="filter">
+                <feTurbulence type="fractalNoise" baseFrequency="0.00001 0.00001" numOctaves="1" result="warp"></feTurbulence>
+                <feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="10" in="SourceGraphic" in2="warpOffset" />
+            </filter>
+          //- template(v-else-if='currentEffect === "texture"')
+            //- <filter id="filter" x="-20%" y="-20%" width="140%" height="140%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" color-interpolation-filters="linearRGB">
+            //-   <feDropShadow stdDeviation="20 20" in="SourceGraphic" dx="4" dy="9" flood-color="#1F3646" flood-opacity="0.6" x="0%" y="0%" width="100%" height="100%" result="dropShadow"/>
+            //- </filter>
+            //- <filter id="filter">
+            //-   <feImage xlink:href="/ripple.png" x="30" y="20" width="0" height="0" result="ripple"></feImage>
+            //-   <feDisplacementMap xChannelSelector="R" yChannelSelector="G" color-interpolation-filters="sRGB" in="SourceGraphic" in2="ripple" scale="20" result="displacementMap" />
+            //-   <feComposite operator="in" in2="ripple"></feComposite>
+            //-   <feComposite in2="SourceGraphic"></feComposite>
+            //- </filter>
+        //- svg id="svblob" refs="blobRef" xmlns="http://www.w3.org/2000/svg" version="1.1" preserveAspectRatio="xMidYMin slice" viewBox="0 0 600 600"
+  //- glitch-filter(v-if='currentEffect === "glitch"')
+  //- texture-filter(v-if='currentEffect === "texture"')
 </template>
 <style lang="sass">
 .rectangle-mask

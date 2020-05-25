@@ -109,10 +109,10 @@ export default {
         }
         this.filterTarget.classList.add('active-filter')
         if (newVal === 'glitch') {
-          console.log('ON rentre par glitch')
+          // console.log('ON rentre par glitch')
           this.setCurrentEffect('glitch')
         } else if (newVal === 'texture') {
-          console.log('ON rentre par texture')
+          // console.log('ON rentre par texture')
           this.setCurrentEffect('texture')
         }
         // this.setEffect()
@@ -267,7 +267,7 @@ export default {
       let thus = this
       this.$nextTick(() => {
         if (type === 'glitch') {
-          console.log('Je suis dans glithc')
+          // console.log('Je suis dans glithc')
           thus.turbVal = { val: 0.000001 };
           thus.turbulence = window.document.querySelectorAll('#filter feTurbulence')[0];
           thus.effectTimeline = new TimelineMax({ paused: false, onUpdate: function() {
@@ -280,7 +280,7 @@ export default {
           })
 
         } else if (type === 'texture') {
-          console.log('Je suis dans texture')
+          // console.log('Je suis dans texture')
           thus.turbulence = document.querySelectorAll('#filter feImage')[0];
           thus.displacementMap = document.querySelectorAll('#filter feDisplacementMap')[0];
           thus.filterTarget.addEventListener('click', function(e) {
@@ -306,10 +306,10 @@ export default {
     // },
     launchEffect () {
       if (this.effectTimeline && this.filterTarget) {
-        console.log('LAUNCHEFFECT')
+        // console.log('LAUNCHEFFECT')
         this.effectTimeline.restart();
       } else {
-        console.log('Désolé il manque dequoi pour lancer leffet', this.filterTarget, this.effectTimeline)
+        // console.log('Désolé il manque dequoi pour lancer leffet', this.filterTarget, this.effectTimeline)
       }
     },
     clearEffect () {
